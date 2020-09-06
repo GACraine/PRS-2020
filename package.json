@@ -21,6 +21,7 @@
   "dependencies": {
     "aws4": "^1.10.1",
     "axios": "^0.20.0",
-    "mustache": "^4.0.1"
+    "mustache": "^4.0.1",
+    "serverless-api-stage": "^1.4.0"
   }
 }
