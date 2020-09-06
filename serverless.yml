@@ -4,7 +4,7 @@ plugins:
   - serverless-export-env
   - serverless-pseudo-parameters
   - serverless-api-gateway-throttling
-  - serverless-api-stage
+  #- serverless-api-stage
 
 custom:
   name: garycraine
@@ -14,13 +14,16 @@ custom:
     maxRequestsPerSecond: 1000
     maxConcurrentRequests: 500  
   # Allow detailed CloudWatch metrics to be enabled
-  stageSettings:
-    MethodSettings:
-      MetricsEnabled: true
-
+  
+  #stageSettings:
+  #  MethodSettings:
+  #    MetricsEnabled: true
+  
 provider:
   name: aws
   runtime: nodejs12.x
+  apiGateway:
+    metrics: true
 
   iamRoleStatements:
     - Effect: Allow
