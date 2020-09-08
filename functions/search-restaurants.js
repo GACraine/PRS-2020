@@ -37,7 +37,7 @@ module.exports.handler = metricScope(metrics =>
     metrics.putMetric("latency", end - start, Unit.Milliseconds)
     metrics.putMetric("count", restaurants.length, Unit.Count)
     metrics.setProperty("RequestId", context.awsRequestId)
-    metrics.setProperty("ApiGatewayRequestId", event.requestContext.requestId)
+    //metrics.setProperty("ApiGatewayRequestId", event.requestContext.requestId)
 
     const response = {
       statusCode: 200,
@@ -46,7 +46,6 @@ module.exports.handler = metricScope(metrics =>
 
     return response
 })
-
 
 /*
 const DocumentClient = require('aws-sdk/clients/dynamodb').DocumentClient
@@ -82,3 +81,5 @@ module.exports.handler = async (event, context) => {
     return response
 }
 */
+
+

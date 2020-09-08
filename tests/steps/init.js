@@ -11,6 +11,7 @@ const init = async () => {
   
   const { credentials, region } = await promisify(awscred.load)()
   
+  process.env.AWS_EMF_ENVIRONMENT   = "Lambda"
   process.env.AWS_ACCESS_KEY_ID     = credentials.accessKeyId
   process.env.AWS_SECRET_ACCESS_KEY = credentials.secretAccessKey
   process.env.AWS_REGION            = region

@@ -5,6 +5,7 @@ const defaultResults = process.env.defaultResults || 8
 const tableName = process.env.restaurants_table
 
 const getRestaurants = async count => {
+  debugger;
   console.log(`fetching ${count} restaurants from ${tableName}...`)
   const req = {
     TableName: tableName,
@@ -12,6 +13,7 @@ const getRestaurants = async count => {
   }
 
   const resp = await dynamodb.scan(req).promise()
+  debugger;
   console.log(`found ${resp.Items.length} restaurants`)
   return resp.Items
 }

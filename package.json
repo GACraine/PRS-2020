@@ -4,15 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "sls": "serverless"
+    "sls": "serverless",
+    "dotEnv": "sls export-env",
+    "test": "npm run dotEnv && jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^26.0.13",
     "aws-sdk": "^2.744.0",
+    "awscred": "^1.5.0",
+    "cheerio": "^1.0.0-rc.3",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
+    "jest": "^26.4.2",
     "serverless": "^1.80.0",
     "serverless-api-gateway-throttling": "^1.0.1",
     "serverless-export-env": "^1.3.1",
@@ -22,6 +28,7 @@
     "aws-embedded-metrics": "^2.0.0",
     "aws4": "^1.10.1",
     "axios": "^0.20.0",
+    "lodash": "^4.17.20",
     "mustache": "^4.0.1",
     "serverless-api-stage": "^1.4.0"
   }
