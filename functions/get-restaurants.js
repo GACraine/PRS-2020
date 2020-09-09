@@ -1,5 +1,6 @@
-const middy = require('@middy/core')
-const ssm = require('@middy/ssm')
+// const middy = require('@middy/core')
+// const ssm = require('@middy/ssm')
+const wrap = require('./lib/wrapper')
 const DocumentClient = require('aws-sdk/clients/dynamodb').DocumentClient
 const dynamodb = new DocumentClient()
 
@@ -20,7 +21,8 @@ const getRestaurants = async count => {
   return resp.Items
 }
 
-module.exports.handler = middy(async (event, context) => {
+// module.exports.handler = middy(async (event, context) => {
+  module.exports.handler = wrap(async (event, context) => {  
   const restaurants = await getRestaurants(process.env.defaultResults)
   const response = {
     statusCode: 200,
@@ -30,21 +32,23 @@ module.exports.handler = middy(async (event, context) => {
   console.info(context.secretString)
 
   return response
-}).use(ssm({
-  cache: true,
-  cacheExpiryInMillis: 5 * 60 * 1000, // 5 mins
-  names: {
-    config: `/${serviceName}/${stage}/get-restaurants/config`
-  },
-  onChange: () => {
-    const config = JSON.parse(process.env.config)
-    process.env.defaultResults = config.defaultResults
-  }  
-})).use(ssm({
-  cache: true,
-  cacheExpiryInMillis: 5 * 60 * 1000, // 5 mins
-  names: {
-    secretString: `/${serviceName}/${stage}/get-restaurants/secretString`
-  },
-  setToContext: true
-}))
+})
+// .use(ssm({
+//   cache: true,
+//   cacheExpiryInMillis: 5 * 60 * 1000, // 5 mins
+//   names: {
+//     config: `/${serviceName}/${stage}/get-restaurants/config`
+//   },
+//   onChange: () => {
+//     const config = JSON.parse(process.env.config)
+//     process.env.defaultResults = config.defaultResults
+//   }  
+// }))
+// .use(ssm({
+//   cache: true,
+//   cacheExpiryInMillis: 5 * 60 * 1000, // 5 mins
+//   names: {
+//     secretString: `/${serviceName}/${stage}/get-restaurants/secretString`
+//   },
+//   setToContext: true
+// }))
