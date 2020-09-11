@@ -9,10 +9,16 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install PIP
+          command: sudo apt-get install python-pip python-dev
+      - run:
+          name: Install awscli
+          command: sudo pip install awscli
+      - run:
           name: Deploy application
           command: |
             chmod +x scripts/aws-cli-assumerole.sh
-            source scripts/aws-cli-assumerole.sh        
+            source scripts/aws-cli-assumerole.sh    
       - node/with-cache:
           steps:
             - run: npm ci
@@ -22,6 +28,12 @@ jobs:
       - image: circleci/node
     steps:
       - checkout
+      - run:
+          name: Install PIP
+          command: sudo apt-get install python-pip python-dev
+      - run:
+          name: Install awscli
+          command: sudo pip install awscli
       - run:
           name: Deploy application
           command: |
