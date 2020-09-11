@@ -8,6 +8,11 @@ jobs:
       - image: circleci/node
     steps:
       - checkout
+      - run:
+          name: Deploy application
+          command: |
+            chmod +x scripts/aws-cli-assumerole.sh
+            source scripts/aws-cli-assumerole.sh        
       - node/with-cache:
           steps:
             - run: npm ci
