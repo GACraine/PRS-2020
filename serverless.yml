@@ -41,7 +41,10 @@ provider:
       Resource: ${ssm:/dev/kmsArn} 
     - Effect: Allow
       Action: events:PutEvents
-      Resource: "*"                   
+      Resource: "*"
+    - Effect: Allow
+      Action: sns:Publish
+      Resource: !Ref RestaurantNotificationTopic                         
 
 functions:
   get-index:
@@ -97,6 +100,20 @@ functions:
     environment:
       bus_name: !Ref EventBus
 
+  notify-restaurant:
+    handler: functions/notify-restaurant.handler
+    events:
+      - eventBridge:
+          eventBus: arn:aws:events:#{AWS::Region}:#{AWS::AccountId}:event-bus/order_events_${self:provider.stage}
+          pattern:
+            source:
+              - big-mouth
+            detail-type:
+              - order_placed
+    environment:
+      bus_name: !Ref EventBus
+      restaurant_notification_topic: !Ref RestaurantNotificationTopic      
+
   search-restaurants:
     handler: functions/search-restaurants.handler
     events:
@@ -142,6 +159,9 @@ resources:
       Type: AWS::Events::EventBus
       Properties:
         Name: order_events_${self:provider.stage}
+
+    RestaurantNotificationTopic:
+      Type: AWS::SNS::Topic        
 
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
@@ -210,21 +230,21 @@ resources:
     
     RestaurantsTableName:
       Value: !Ref RestaurantsTable
-    
     CognitoUserPoolId:
       Value: !Ref CognitoUserPool
-
     CognitoUserPoolArn:
       Value: !GetAtt CognitoUserPool.Arn
-
     CognitoUserPoolWebClientId:
       Value: !Ref WebCognitoUserPoolClient
-
     CognitoUserPoolServerClientId:
       Value: !Ref ServerCognitoUserPoolClient
-
     EventBusName:
       Value: !Ref EventBus
+    RestaurantNotificationTopicName:
+      Value: !GetAtt RestaurantNotificationTopic.TopicName
+    RestaurantNotificationTopicArn:
+      Value: !Ref RestaurantNotificationTopic
+
  
 
 
