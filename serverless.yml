@@ -1,3 +1,5 @@
+org: garycraine
+app: workshop-garycraine-app
 service: workshop-${self:custom.name}
 
 plugins:
