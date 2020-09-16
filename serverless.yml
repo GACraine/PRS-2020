@@ -116,6 +116,11 @@ resources:
               - !Ref ApiGatewayRestApi
               - .execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}
 
+    EventBus:
+      Type: AWS::Events::EventBus
+      Properties:
+        Name: order_events_${self:provider.stage}
+
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
       Properties:
@@ -194,7 +199,10 @@ resources:
       Value: !Ref WebCognitoUserPoolClient
 
     CognitoUserPoolServerClientId:
-      Value: !Ref ServerCognitoUserPoolClient  
+      Value: !Ref ServerCognitoUserPoolClient
+
+    EventBusName:
+      Value: !Ref EventBus
  
 
 
