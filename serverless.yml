@@ -218,7 +218,47 @@ resources:
           - ALLOW_ADMIN_USER_PASSWORD_AUTH
           - ALLOW_REFRESH_TOKEN_AUTH
         PreventUserExistenceErrors: ENABLED
-  
+
+    E2eTestQueue:
+      Type: AWS::SQS::Queue
+      Condition: IsE2eTest
+      Properties:
+        MessageRetentionPeriod: 60
+        VisibilityTimeout: 1  
+    
+    E2eTestQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Condition: IsE2eTest
+      Properties:
+        Queues:
+          - !Ref E2eTestQueue
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            Effect: Allow
+            Principal: "*"
+            Action: SQS:SendMessage
+            Resource: !GetAtt E2eTestQueue.Arn
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !Ref RestaurantNotificationTopic
+    
+    E2eTestSnsSubscription:
+      Type: AWS::SNS::Subscription
+      Condition: IsE2eTest
+      Properties:
+        Protocol: sqs
+        Endpoint: !GetAtt E2eTestQueue.Arn
+        RawMessageDelivery: false
+        Region: "#{AWS::Region}"
+        TopicArn: !Ref RestaurantNotificationTopic                              
+
+  Conditions:
+    IsE2eTest:
+      Fn::Equals:
+        - ${self:provider.stage}
+        - dev
+
   Outputs:
     RestApiUrl:
       Value: 
@@ -227,7 +267,6 @@ resources:
           - - https://
             - !Ref ApiGatewayRestApi
             - .execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}
-    
     RestaurantsTableName:
       Value: !Ref RestaurantsTable
     CognitoUserPoolId:
@@ -244,6 +283,9 @@ resources:
       Value: !GetAtt RestaurantNotificationTopic.TopicName
     RestaurantNotificationTopicArn:
       Value: !Ref RestaurantNotificationTopic
+    E2eTestQueueUrl:
+      Condition: IsE2eTest
+      Value: !Ref E2eTestQueue      
 
  
 
